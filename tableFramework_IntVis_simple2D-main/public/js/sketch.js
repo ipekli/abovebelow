@@ -147,7 +147,7 @@ function preload() {
     info4 = loadImage('assets/biodiversity_middle.png');
     info = loadImage('assets/no_selection.png');
     biomes = loadImage('assets/biomes.png');
-    table = loadTable('assets/data.csv', 'header');
+    table = loadTable('assets/data.csv', 'csv', 'header');
 	socket.on('connected',function(data){
 		// do something in case another node is connected
 		// console.log('new client connected id:' + data.id) 
@@ -163,6 +163,7 @@ function setup() {
 //	canvas = createCanvas(windowWidth, windowHeight)
 	canvas = createCanvas(2560, 1600);
     print(table.getRowCount() + ' total rows in table');
+	print(table.getColumnCount() + 'total columns in table')
 	noStroke()
 	textFont(myFont)
 	// Attaching  Touch Listeners to body and P5 JS Canvas 
@@ -176,13 +177,14 @@ function setup() {
 
 function draw() {
   	background(0)
-	show2d()
-	   background(0, 0, 0, 0);
+	background(0, 0, 0, 0);
     noStroke();
     imageMode(CORNER);
     image(backgroundImage, 0, 0, width, height);
-    future();
     today();
+	future();
+	show2d();
+
 }
 
 
@@ -226,18 +228,12 @@ function show2d() {
 
 		trackedDevices.forEach( element => {
 			element.calculateRange()
-			// uncomment this if the tableControl object is available
-			// tableControl.interact(element.smoothPosition.x,element.smoothPosition.y,element.smoothRotation,element.uniqueId)
-		})
 
-		// you can rename this trackedDevices - call them tokens for instance
+		})
 		trackedDevices.forEach(element =>{
 			if(element.inRange){
 				element.show()
-				// if(elemnt.uniqueId == 52){ /* example of a loop accessing an specific uniqueId  to do something specific */}
-				// access the identifier : element.identifier // changes everytime you add or create a new object on screen
-				// access the uniqueId : element.uniqueId // stays the same always for each tracked object
-				// text(element.uniqueId, element.smoothPosition.x + 100, element.smoothPosition.y + 100)
+
 			}
 		})
 	}
@@ -252,17 +248,17 @@ function future(){
     let middle = (height/2)- height/5.5;
     let spaceMiddle = height/200;
 
-    fill(0, 0, 0, 100);
+    fill(255, 0, 0, 100);
 
     beginShape();
 
-    vertex(spaceRight, middle -spaceMiddle);
+    vertex(spaceRight, middle-spaceMiddle);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        tPot = table.get(i)('Tree GtC potential');
-        tPred = table.get(i)('Tree GtC prediction');
+		tPot = table.getRow(i).getNum("Tree GtC potential");
+		tPred = table.getRow(i).getNum("Tree GtC prediction");
 
         let mtPot = map(tPot, 0, 19, 0, width/10);
         let mtPred = map(tPred, 0, 19, 0, width/14);
@@ -299,15 +295,15 @@ function future(){
     vertex(spaceRight, middle+spaceMiddle);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        sPot = table.get(i)('Soil GtC potential');
-        sPred = table.get(i)('Soil GtC prediction');
+        sPot = table.getRow(i).getNum("Soil GtC potential");
+        sPred = table.getRow(i).getNum("Soil GtC prediction");
 
         let msPot = map(sPot, 0, 150, 0, width/2.85);
         let msPred = map(sPred, 0, 150, 0, width/2.25);
 
-        let sP = map( rotationS, 0, 360, msPred, msPot);
+        let sP = map(rotationS, 0, 360, msPred, msPot);
         aPred = sP;
         ppmS = map(rotationS, 0, 360, -73.2, 69.4);
 
@@ -335,9 +331,9 @@ function future(){
     vertex(spaceRight, 0);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        aNow = table.get(i)('Mapped Air GtC now');
+        aNow = table.getRow(i).getNum("Mapped Air GtC now");
 
         let maPred = map(aPred, 3.7, 4.5, -15, 15);
         let maPot = map(aPot, 4, 9, -15, 15);
@@ -365,7 +361,7 @@ function future(){
             }
         }
     }
-    vertex( spaceLeft, 0);
+    vertex(spaceLeft, 0);
     endShape();
 
     pop();
@@ -373,7 +369,7 @@ function future(){
 
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
         let xCoord = space ;
         space = xCoord+height/110;
@@ -383,7 +379,8 @@ function future(){
 
         if (textI == false) {
             if (graphPointPosition.dist(tokenOfInterest) < 3) {
-                coordinates = table.get(i)('Biomes');
+                coordinates = table.getRow(i).getString("Biomes");
+				console.log(coordinates);
                 latLong = map(xCoord, spaceRight, spaceLeft, -90, 90);
                 textI = true;
             }
@@ -434,9 +431,9 @@ function today(){
     vertex( spaceRight, middle-spaceMiddle);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        tNow = table.get(i)('Tree GtC now');
+        tNow = table.getRow(i).getNum("Tree GtC now");
 
         let mtNow = map(tNow, 0, 19, 0, width/14);
 
@@ -457,9 +454,9 @@ function today(){
     vertex( spaceRight, middle+spaceMiddle);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        sNow = table.get(i)('s');
+        sNow = table.getRow(i).getNum("s");
 
         let msNow = map(sNow, 0, 150, 0, width/2.5);
         let xCoord = space ;
@@ -477,9 +474,9 @@ function today(){
     vertex( spaceRight, 0);
     space = spaceRight;
 
-    for (let i = 0; i < numEntries; i++) {
+    for (let i = 0; i < table.getRowCount(); i++) {
 
-        aNow = table.get(i)('Mapped Air GtC now');
+        aNow = table.getRow(i).getNum("Mapped Air GtC now");
 
         let maNow = map(aNow, 3, 9, width/300, width/20);
 
