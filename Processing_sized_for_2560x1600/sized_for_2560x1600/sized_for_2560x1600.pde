@@ -134,9 +134,6 @@ void future() {
 
   fill(0, 0, 0, 100);
 
-
-
-
   // tree graph
 
   beginShape();

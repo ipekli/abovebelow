@@ -210,6 +210,7 @@ function listenMessages(){
 				element.x = data.x * windowWidth
 				element.y = data.y * windowHeight
 				element.rotation = data.rot
+				let positionXi = element.x
 			}
 		})
 	})
