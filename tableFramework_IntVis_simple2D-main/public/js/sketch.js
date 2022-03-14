@@ -55,6 +55,13 @@ let id1 = 1; //info
 let id2 = 2; //tree
 let id3 = 3; //soil
 
+//trackt welche tracker (tracker id) welche funktion des Programms hat. 
+let trackerAllocation = {
+  info: undefined,
+  tree: undefined,
+  soil: undefined
+}
+
 
 let socket = io() 
 let trackedDevices = []
@@ -196,6 +203,15 @@ function windowResized() {
 // LISTEN FOR NEW TRACKED DEVICES AND UPDATES
 function listenMessages(){
 	socket.on('addDevice', function(data){
+
+    for (trackerFunction of Object.keys(trackerAllocation)) {
+      if (typeof trackerAllocation[trackerFunction] === "undefined") {
+        trackerAllocation[trackerFunction] = data.id
+        console.log(trackerAllocation);
+        break;
+      }
+    }
+
 		let thisDevice = new TrackedDevice()
 		thisDevice.uniqueId = data.id
 		thisDevice.x = data.x * windowWidth
@@ -205,22 +221,42 @@ function listenMessages(){
 	}) 
 	socket.on('updateDevice', function(data){
 		let id = data.id 
+
 		trackedDevices.forEach( element => {
 			if(element.uniqueId === id){
 				element.x = data.x * windowWidth
 				element.y = data.y * windowHeight
 				element.rotation = data.rot
-				rotationT = element.rotation
-				rotationS = element.rotation;
 				positionXi = element.x
+
+        for (trackerFunction of Object.keys(trackerAllocation)) {
+          if (trackerFunction === "info") {
+            //update info tracker
+          }
+          if (trackerFunction === "soil") {
+            //update soil tracker
+            rotationS = element.rotation;
+          }
+          if (trackerFunction === "tree") {
+            //update tree tracker
+            rotationT = element.rotation
+          }
+        }
 				
 			}
 		})
 	})
 	socket.on('removeDevice', function(data){
-		let id = data.id 
+    console.log("remove device");
+		for (trackerFunction of Object.keys(trackerAllocation)) {
+      if (trackerAllocation[trackerFunction] === data.id) {
+        trackerAllocation[trackerFunction] = undefined;
+        console.log(trackerAllocation);
+        break;
+      }
+    }
 		trackedDevices.forEach( function(element,index) {
-			if(element.uniqueId == id ){
+			if(element.uniqueId == data.id ){
 				trackedDevices.splice(index,1)
 			}
 		})
@@ -345,7 +381,7 @@ function future(){
 
         aNow = table.getRow(i).getNum("Mapped Air GtC now");
 
-        let maPred = map(aPred, 3.7, 4.5, -100, 100);
+        let maPred = map(aPred, 3.7, 4.5, -30, 30);
         let maPot = map(aPot, 4, 9, -15, 15);
         let maNow = map(aNow, 3, 9, 3, 54);
         let Now = map(maNow, 3, 54, 0, maPred);
@@ -355,8 +391,7 @@ function future(){
         let yCoord = 0 + maNow - Now - Now2 ;
         space = xCoord+height/110;
 
-
-        vertex(xCoord, yCoord);
+        vertex(xCoord, -yCoord);
 
         let graphPointPosition = createVector(xCoord, 0);
         let tokenOfInterest = createVector(positionXi, 0);
@@ -387,7 +422,6 @@ function future(){
         if (textI == false) {
             if (graphPointPosition.dist(tokenOfInterest) < 3) {
                 coordinates = table.getRow(i).getString("Biomes");
-				console.log(coordinates);
                 latLong = map(xCoord, spaceRight, spaceLeft, -90, 90);
                 textI = true;
             }
@@ -493,7 +527,7 @@ function today(){
     vertex(spaceLeft, 0);
     endShape();
 
-    if(id == id1){
+    if(id == trackerAllocation.info){
 
         // intersection points
 
