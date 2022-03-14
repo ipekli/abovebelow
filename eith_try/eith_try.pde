@@ -1,6 +1,3 @@
-import processing.javafx.*;
-
-
 TrackerClient tracker;
 
 float toSize = 150;
@@ -69,7 +66,7 @@ int id3 = 3; //soil
 
 
 void setup() {
-  size(2560, 1600, FX2D);
+  size(1920, 1080, FX2D);
   colorMode(HSB, 360, 100, 100, 100);
 
   // fullScreen(FX2D);
@@ -86,8 +83,10 @@ void setup() {
 
 
   background = loadImage("background.png");
+  background.resize(width, height);
   scale = loadImage("scale.png");
-   temp = loadImage("temp.png");
+  scale.resize(70,550);
+  temp = loadImage("temp.png");
   ppm = loadImage("ppm.png");
   info1 = loadImage("soilcarbon_middle.png");
   info2 = loadImage("climateconditions_middle.png");
@@ -104,8 +103,8 @@ void draw() {
 
 
   imageMode(CORNER);
-  image(background, 0, 0, width, height);
-  image(scale, width/100, (height/2)- height/5.5,70,550);
+  image(background, 0, 0);
+  image(scale, width/100, (height/2)- height/5.5);
 
 
 
@@ -117,6 +116,10 @@ void draw() {
   for (TactileObject to : tracker.getTactileObjects()) {
     to.update();
     drawTactileObject(to);
+  }
+  
+  if (frameCount%60 == 0) {
+    println(frameRate);
   }
 }
 
@@ -133,6 +136,9 @@ void future() {
   float spaceMiddle = height/200;
 
   fill(0, 0, 0, 100);
+
+
+
 
   // tree graph
 
@@ -312,7 +318,7 @@ void future() {
   float ppmCalc = 369 + ppmT +ppmS;
   float sizePPM = map(ppmCalc, 0, 500, 1, 170);
 
-  circle( width/6, height - height/6+1, sizePPM); 
+  circle( width/6, height - height/6, sizePPM); 
 
 
 
@@ -320,7 +326,7 @@ void future() {
 
   float colorPPM = map(ppmCalc, 0, 500, 270, 40);
   fill(colorPPM, 100, 100, 100);
-  float numPPM = map(ppmCalc,0, 500,-1,2);
+  float numPPM = map(ppmCalc,0, 500,0,5);
 int numPPMr = round(numPPM);
 
 stroke(0,0,100,100);
@@ -463,7 +469,7 @@ if(id == id1){
 
 // Biomes
 
-if ((positionXi >  870) && (positionXi < 900)) {
+if ((positionXi >  945) && (positionXi < 947)) {
  imageMode(CENTER);
   image(biomes, width/2.15, height - height/6+4, 250,195);
 }
@@ -571,7 +577,7 @@ pop();
   fill(255);
   textSize(10);
   textAlign(CENTER, CENTER);
- // text(to.uniqueId + " - R: " + round(to.rotation), 0, 0);
+  text(to.uniqueId + " - R: " + round(to.rotation), 0, 0);
 
   pop();
 
@@ -582,7 +588,7 @@ pop();
   // imput for the tokens and data connections
 
   id = to.uniqueId;
-  println(id);
+  //println(id);
 
   float posX = to.x;
   float posY = to.y;

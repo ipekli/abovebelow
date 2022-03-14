@@ -210,7 +210,10 @@ function listenMessages(){
 				element.x = data.x * windowWidth
 				element.y = data.y * windowHeight
 				element.rotation = data.rot
-				let positionXi = element.x
+				rotationT = element.rotation
+				rotationS = element.rotation;
+				positionXi = element.x
+				
 			}
 		})
 	})
@@ -239,6 +242,7 @@ function show2d() {
 		})
 	}
 }
+
 function future(){
 
     push();
@@ -264,7 +268,7 @@ function future(){
         let mtPot = map(tPot, 0, 19, 0, width/10);
         let mtPred = map(tPred, 0, 19, 0, width/14);
 
-        let tP = map( rotationT, 0, 360, mtPred, mtPot);
+        let tP = map(rotationT, 0, 360, mtPred, mtPot);
         aPot = tP;
         ppmT = map(rotationT, 0, 360, 61.6, -86.4);
 
@@ -272,9 +276,7 @@ function future(){
         let yCoord = middle -spaceMiddle- tP;
         space = xCoord +(height/110);
 
-
         vertex(xCoord, yCoord);
-
 
         let graphPointPosition = createVector(xCoord, 0);
         let tokenOfInterest = createVector(positionXi, 0);
@@ -293,6 +295,7 @@ function future(){
 
     beginShape();
 
+
     vertex(spaceRight, middle+spaceMiddle);
     space = spaceRight;
 
@@ -309,8 +312,11 @@ function future(){
         ppmS = map(rotationS, 0, 360, -73.2, 69.4);
 
         let xCoord = space ;
-        let yCoord = middle + sP +spaceMiddle;
+        let yCoord = middle + sP + spaceMiddle;
+
         space = xCoord+height/110;
+
+
 
         vertex(xCoord, yCoord);
         let graphPointPosition = createVector(xCoord, 0);
@@ -325,7 +331,10 @@ function future(){
     }
     vertex(spaceLeft, middle+spaceMiddle);
     endShape();
+
+
     // air graph
+
 
     beginShape();
 
@@ -336,13 +345,11 @@ function future(){
 
         aNow = table.getRow(i).getNum("Mapped Air GtC now");
 
-        let maPred = map(aPred, 3.7, 4.5, -15, 15);
+        let maPred = map(aPred, 3.7, 4.5, -100, 100);
         let maPot = map(aPot, 4, 9, -15, 15);
         let maNow = map(aNow, 3, 9, 3, 54);
         let Now = map(maNow, 3, 54, 0, maPred);
         let Now2 = map(maNow, 3, 54, 0, maPot);
-
-
 
         let xCoord = space ;
         let yCoord = 0 + maNow - Now - Now2 ;
@@ -350,7 +357,6 @@ function future(){
 
 
         vertex(xCoord, yCoord);
-
 
         let graphPointPosition = createVector(xCoord, 0);
         let tokenOfInterest = createVector(positionXi, 0);
@@ -365,9 +371,9 @@ function future(){
     vertex(spaceLeft, 0);
     endShape();
 
+
     pop();
     // text data out of table
-
     space = spaceRight;
 
     for (let i = 0; i < table.getRowCount(); i++) {
@@ -388,8 +394,6 @@ function future(){
         }
     }
 
-
-
     //ppm monitor
 
     fill(0, 0, 100, 50);
@@ -397,8 +401,6 @@ function future(){
     let sizePPM = map(ppmCalc, 0, 500, 1, 170);
 
     circle(width/6, height - height/6+1, sizePPM);
-
-
 
     //temperature monitor
 
@@ -488,12 +490,8 @@ function today(){
         vertex(xCoord, yCoord);
     }
 
-
     vertex(spaceLeft, 0);
     endShape();
-
-
-
 
     if(id == id1){
 
@@ -556,8 +554,6 @@ function today(){
     }
 
 }
-
-
 
 // *** CLASS FOR THE TRACKED DEVICE *** //
 class TrackedDevice{
