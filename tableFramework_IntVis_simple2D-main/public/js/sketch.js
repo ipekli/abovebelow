@@ -57,7 +57,7 @@ let id3 = 3; //soil
 
 //trackt welche tracker (tracker id) welche funktion des Programms hat. 
 let trackerAllocation = {
-  info: undefined,
+//  info: undefined,
   tree: undefined,
   soil: undefined
 }
@@ -229,19 +229,24 @@ function listenMessages(){
 				element.x = data.x * windowWidth
 				element.y = data.y * windowHeight
 				element.rotation = data.rot
-				positionXi = element.x
-
+	/*			positionXi = element.x
+        positionX = element.x
+        positionY = element.y
+*/
         for (trackerFunction of Object.keys(trackerAllocation)) {
-          if (trackerFunction === "info") {
-            //update info tracker
+ /*         if (trackerFunction === "info") {
+
           }
+   */
           if (trackerFunction === "soil") {
             //update soil tracker
             rotationS = element.rotation;
+            positionXi = element.x
+
           }
           if (trackerFunction === "tree") {
-            //update tree tracker
             rotationT = element.rotation
+
           }
         }
 				
@@ -306,16 +311,16 @@ function future(){
         let mtPot = map(tPot, 0, 19, 0, width/10);
         let mtPred = map(tPred, 0, 19, 0, width/14);
 
-        let tP = map(rotationT, 0, 360, mtPred, mtPot);
+        let tP = map(rotationS, 0, 360, mtPred, mtPot);
         aPot = tP;
-        ppmT = map(rotationT, 0, 360, 61.6, -86.4);
+        ppmT = map(rotationS, 0, 360, 61.6, -86.4);
 
         let xCoord = space;
         let yCoord = middle -spaceMiddle- tP;
         space = xCoord +(height/110);
 
         vertex(xCoord, yCoord);
-
+        
         let graphPointPosition = createVector(xCoord, 0);
         let tokenOfInterest = createVector(positionXi, 0);
         if (circleT == false) {
@@ -323,6 +328,7 @@ function future(){
                 CoordXt = xCoord;
                 CoordYt = yCoord;
                 circleT = true;
+                
             }
         }
     }
@@ -353,8 +359,6 @@ function future(){
         let yCoord = middle + sP + spaceMiddle;
 
         space = xCoord+height/110;
-
-
 
         vertex(xCoord, yCoord);
         let graphPointPosition = createVector(xCoord, 0);
@@ -442,10 +446,11 @@ function future(){
 
     let colorPPM = map(ppmCalc, 0, 500, 270, 40);
     fill(colorPPM, 100, 100, 100);
-    let numPPM = map(ppmCalc,0, 500,-1,2);
-    let numPPMr = round(numPPM);
+    let numPPM = map(ppmCalc,0, 500, -1, 2);
+    console.log(numPPM)
+    let numPPMr = round(numPPM, 2);
 
-    stroke(0,0,100,100);
+   // stroke(0,0,100,100);
     circle( width/3.3, height - height/6, 170);
 
     fill(0,0,100,100);
@@ -529,7 +534,7 @@ function today(){
     vertex(spaceLeft, 0);
     endShape();
 
-    if(id == trackerAllocation.info){
+  //  if(id == trackerAllocation.info){
 
         // intersection points
 
@@ -555,7 +560,7 @@ function today(){
             line(positionXi, 0, positionXi, height);
         }
 
-    }
+ //   }
 
     pop();
 
@@ -627,25 +632,25 @@ class TrackedDevice{
 		let rotX = (0 + radius) * Math.cos(radians(this.smoothRotation))
 		let rotY = (0+ radius) * Math.sin(radians(this.smoothRotation))
 
-		fill(255,255,100, 25+map(this.smoothRotation,0,360,0,150))
+	//	fill(255,255,100, 25+map(this.smoothRotation,0,360,0,150))
 		noStroke()
-		ellipse(this.smoothPosition.x,this.smoothPosition.y,radius*2 + lSize,radius*2 + lSize)
+	//	ellipse(this.smoothPosition.x,this.smoothPosition.y,radius*2 + lSize,radius*2 + lSize)
 		fill(255,255,100)
 		stroke(0)
 		strokeWeight(10)
-		circle(this.smoothPosition.x ,this.smoothPosition.y , radius*2)
+	//	circle(this.smoothPosition.x ,this.smoothPosition.y , radius*2)
 		stroke(0)
 		strokeWeight(10)
-		line(this.smoothPosition.x , this.smoothPosition.y  , this.smoothPosition.x + rotX, this.smoothPosition.y + rotY)
+	//	line(this.smoothPosition.x , this.smoothPosition.y  , this.smoothPosition.x + rotX, this.smoothPosition.y + rotY)
 
 		// DISPLAY DEGREES OF ROTATION
 		push()
 			translate(this.smoothPosition.x+rotX, this.smoothPosition.y+rotY)
 			rotate(radians(this.smoothRotation))
-			fill(255,255,100)
+		//	fill(255,255,100)
 			textSize(30)
 			// text(Math.round(this.smoothRotation,3) + " , " + Math.round(this.smoothPosition.x) + " , " + Math.round(this.smoothPosition.y), 30,10)
-			text(Math.round(this.smoothRotation,3), 30,10)
+	//		text(Math.round(this.smoothRotation,3), 30,10)
 		pop()
 
 		// DISPLAY LABEL
@@ -763,16 +768,14 @@ class Label{
 		// mapping the rotation of the tracked device to the position of the text array
 		// if rotation 120 
 		let txtContent =[
-			"I'M A PROTOTYPE FOR TANGIBLE INTERACTION AND DATA VISUALIZATION",
-			"MOVE ME AROUND TO EXPLORE MY AFFORDANCES!",
-			"STUDENTS FROM INTERACTION DESIGN USE ME TO EXPLORE THEIR CONCEPTS",
-			"DESIGN ... TECHNOLOGY ... THINKING ... CONCEIVING ...  DOING ...  ",
-			"PROTOTYPING"
+			
 		]
 		let peak = 10
 		let offX=120
 		let offY=0
-		push()
+		/*
+    push()
+    
 		strokeWeight(5)
 		stroke(255,255,100,this.opacity)
 		noFill()
@@ -793,6 +796,7 @@ class Label{
 		noStroke()
 		text(txtContent[int(map(this.rotation%360,1,360,0,txtContent.length))],offX +30 , offY - this.size/4, this.size-25, this.size/2 )
 		pop()
+    */
 
 	}
 }
