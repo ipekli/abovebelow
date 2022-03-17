@@ -167,8 +167,8 @@ function preload() {
 
 
 function setup() {
-//	canvas = createCanvas(windowWidth, windowHeight)
-	canvas = createCanvas(2560, 1600);
+	canvas = createCanvas(windowWidth, windowHeight)
+//	canvas = createCanvas(2560, 1600);
     print(table.getRowCount() + ' total rows in table');
 	print(table.getColumnCount() + 'total columns in table')
 	noStroke()
