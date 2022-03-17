@@ -168,6 +168,8 @@ function preload() {
 
 function setup() {
 	canvas = createCanvas(windowWidth, windowHeight)
+  colorMode(HSB, 100);
+
 //	canvas = createCanvas(2560, 1600);
     print(table.getRowCount() + ' total rows in table');
 	print(table.getColumnCount() + 'total columns in table')
@@ -381,7 +383,7 @@ function future(){
 
         aNow = table.getRow(i).getNum("Mapped Air GtC now");
 
-        let maPred = map(aPred, 3.7, 4.5, -15, 15);
+        let maPred = map(aPred, 3.7, 4.5, -30, 30);
         let maPot = map(aPot, 4, 9, -15, 15);
         let maNow = map(aNow, 3, 9, 3, 54);
         let Now = map(maNow, 3, 54, 0, maPred);
@@ -569,12 +571,12 @@ function today(){
 //ppm
 
     imageMode(CENTER);
-    image(ppm, width/3, height - height/3+2, 180, 195);
+    image(ppm, width/6, height - height/6+4, 180, 195);
 
     // temp
 
     imageMode(CENTER);
-    image(temp, width/1.1, height - height/3+2, 180, 195);
+    image(temp, width/3.3, height - height/6+4, 180, 195);
 
 
     // text
